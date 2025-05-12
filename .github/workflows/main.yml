@@ -1,0 +1,46 @@
+name: Deploy Changed Lambdas
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 2
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-north-1
+
+      - name: Login to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Deploy changed Lambda functions
+        run: |
+          for dir in lambda/*/; do
+            name=$(basename "$dir")
+            echo "Checking changes in $name"
+
+            if git diff --quiet HEAD^ HEAD -- "$dir"; then
+              echo "No changes in $name"
+            else
+              echo "Changes detected in $name, deploying..."
+
+              IMAGE_URI=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.eu-north-1.amazonaws.com/lambda/$name:latest
+
+              docker build -t $IMAGE_URI "$dir"
+              docker push $IMAGE_URI
+            fi
+          done
