@@ -4,7 +4,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "esbuild market_api.ts --bundle --minify --sourcemap --platform=node --target=es2022 --outfile=dist/market_api.js"
+    "tsc": "tsc --noEmit",
+    "build": "esbuild src/index.ts. --bundle --minify --sourcemap --platform=node --target=es2022,node22 --format=esm --outfile=dist/user_api.js"
   },
   "author": "",
   "license": "ISC",

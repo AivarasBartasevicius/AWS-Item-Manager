@@ -33,14 +33,15 @@ jobs:
             name=$(basename "$dir")
             echo "Checking changes in $name"
 
-            if git diff --quiet HEAD^ HEAD -- "$dir"; then
-              echo "No changes in $name"
-            else
-              echo "Changes detected in $name, deploying..."
+            # need to add some check for changes, prob hash or something, git diff approach would only work if deploys never fail
+            # if git diff --quiet HEAD^ HEAD -- "$dir"; then
+            #   echo "No changes in $name"
+            # else
+              # echo "Changes detected in $name, deploying..."
 
               IMAGE_URI=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.eu-north-1.amazonaws.com/lambda/$name:latest
 
               docker build -t $IMAGE_URI "$dir"
               docker push $IMAGE_URI
-            fi
+            # fi
           done
