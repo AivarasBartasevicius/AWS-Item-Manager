@@ -10,7 +10,7 @@ import {
 import { S3Service } from "../service/s3";
 
 const itemFilterDDB = new DynamoDBService<ItemFilterDTO, UserKey>("user");
-const itemFilterS3 = new S3Service("filters");
+const itemFilterS3 = new S3Service("user-item-filters");
 
 export async function getItemFilterList(req: Request, res: Response) {
   const user = req.user;
