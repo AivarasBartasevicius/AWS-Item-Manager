@@ -43,5 +43,10 @@ jobs:
 
               docker build -t $IMAGE_URI "$dir"
               docker push $IMAGE_URI
+
+              echo "Updating Lambda function $name"
+              aws lambda update-function-code \
+                --function-name $name \
+                --image-uri $IMAGE_URI
             # fi
           done
