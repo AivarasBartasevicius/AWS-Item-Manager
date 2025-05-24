@@ -5,7 +5,6 @@ import { authMiddleware } from "./middleware/auth.middleware";
 import { Context, S3Event } from "aws-lambda";
 
 const app = express();
-const port = 8000;
 
 app.use(express.json());
 app.use(authMiddleware);
