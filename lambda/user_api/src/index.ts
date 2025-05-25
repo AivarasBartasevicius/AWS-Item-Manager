@@ -13,5 +13,6 @@ app.use(routes);
 const handleRequest = serverless(app);
 
 export const handler = async (event: S3Event, context: Context) => {
+  console.log("Basic console.log for now", event);
   return await handleRequest(event, context);
 };
