@@ -5,11 +5,11 @@ import { authMiddleware } from "./middleware/auth.middleware";
 import { Context, S3Event } from "aws-lambda";
 
 const app = express();
-const basePath = "/user";
+const basePath = "/api";
 
 app.use(express.json());
 app.use(authMiddleware);
-app.use(basePath, routes);
+app.use(routes);
 
 const handleRequest = serverless(app, {
   basePath: basePath,
