@@ -13,10 +13,5 @@ app.use(routes);
 const handleRequest = serverless(app);
 
 export const handler = async (event: S3Event, context: Context) => {
-  return {
-    statusCode: 200,
-    body: JSON.stringify({
-      message: "Debuging",
-    }),
-  };
+  return await handleRequest(event, context);
 };
