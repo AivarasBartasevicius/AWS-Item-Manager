@@ -5,6 +5,8 @@ resource "aws_lambda_function" "market_api" {
   image_uri    = "911197153746.dkr.ecr.eu-north-1.amazonaws.com/lambda/market_api:latest"
 
   role = aws_iam_role.item_manager.arn
+
+  architectures = ["arm64"]
 }
 
 resource "aws_cloudwatch_log_group" "market_api" {

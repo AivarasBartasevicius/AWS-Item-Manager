@@ -6,9 +6,9 @@ import stashRoutes from "./stash.routes";
 
 const router = Router();
 
-router.use("/character", characterRoutes);
-router.use("/item-filter", itemFilterRoutes);
-router.use("/stash", stashRoutes);
-router.use("/profile", profileRoutes);
+router.use(characterRoutes);
+router.use(itemFilterRoutes);
+router.use(stashRoutes);
+router.use(profileRoutes);
 
 export default router;
