@@ -5,6 +5,17 @@ resource "aws_lambda_function" "user_api" {
   function_name = "user_api"
 
   role = aws_iam_role.item_manager.arn
+
+  environment {
+    variables = {
+    }
+  }
+
+  lifecycle {
+    ignore_changes = [
+      environment[0].variables["ACCESS_TOKEN_SECRET"]
+    ]
+  }
 }
 
 resource "aws_cloudwatch_log_group" "user_api" {
