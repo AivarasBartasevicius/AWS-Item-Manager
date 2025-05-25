@@ -10,7 +10,7 @@ export async function getItemsByLocation(
   consistentRead = false
 ) {
   const result = await itemDDB.query(`locationId = :id`, {
-    ":id": { S: locationId },
+    ":id": locationId,
   });
 
   //One of the reason why Path of exile item system prob wouldn't be a good match for DynamoDB. Too many relations.

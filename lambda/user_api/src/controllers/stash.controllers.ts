@@ -5,7 +5,9 @@ import { getItemsByLocation, putItems } from "../service/item.service";
 import { Stash, StashDTO } from "../types/stash.types";
 import { mapDTOtoStash, mapStashToDTO } from "../mappers/stash.mapper";
 
-const stashDDB = new DynamoDBService<StashDTO, UserLeagueDataKey>("user");
+const stashDDB = new DynamoDBService<StashDTO, UserLeagueDataKey>(
+  "user_league_data"
+);
 
 export async function getStashList(req: Request, res: Response) {
   const user = req.user;
@@ -14,7 +16,7 @@ export async function getStashList(req: Request, res: Response) {
   const result = await stashDDB.query(
     `userLeagueId = :id AND begins_with(leagueObjectId, :prefix) `,
     {
-      ":id": { S: `${league.toUpperCase()}#${user.userId}` },
+      ":id": `${league.toUpperCase()}#${user.userId}`,
       ":prefix": "STASH#",
     }
   );

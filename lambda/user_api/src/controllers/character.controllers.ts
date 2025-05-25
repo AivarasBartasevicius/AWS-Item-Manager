@@ -6,7 +6,7 @@ import { DTOtoCharacter, mapCharacterToDTO } from "../mappers/character.mapper";
 import { getItemsByLocation, putItems } from "../service/item.service";
 
 const characterDDB = new DynamoDBService<CharacterDTO, UserLeagueDataKey>(
-  "user"
+  "user_league_data"
 );
 
 export async function getCharacterList(req: Request, res: Response) {
@@ -19,7 +19,7 @@ export async function getCharacterList(req: Request, res: Response) {
   const result = await characterDDB.query(
     `userLeagueId = :id AND begins_with(leagueObjectId, :prefix) `,
     {
-      ":id": { S: `${league.toUpperCase()}#${requestedUserId}` },
+      ":id": `${league.toUpperCase()}#${requestedUserId}`,
       ":prefix": "CHARACTER#",
     }
   );

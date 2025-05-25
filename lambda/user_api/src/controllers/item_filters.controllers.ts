@@ -21,7 +21,7 @@ export async function getItemFilterList(req: Request, res: Response) {
 
   let keyConditionExpression = `userId = :id AND begins_with(userObjectId, :prefix)`;
   const expressionValues: Record<string, any> = {
-    ":id": { S: user.userId },
+    ":id": user.userId,
     ":prefix": "FILTER#",
   };
 
