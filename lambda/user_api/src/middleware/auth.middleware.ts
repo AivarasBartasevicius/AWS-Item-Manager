@@ -6,6 +6,9 @@ export function authMiddleware(
   res: Response,
   next: NextFunction
 ) {
+  console.log("ACCESS_TOKEN_SECRET:", process.env.ACCESS_TOKEN_SECRET);
+  console.log("req", req);
+
   const authHeader = req.headers.authorization || "";
   const token = authHeader.replace(/^bearer\s/gi, "");
 
