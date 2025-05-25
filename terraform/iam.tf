@@ -16,7 +16,7 @@ resource "aws_iam_role_policy" "item_manager_policy" {
           "dynamodb:Query",
           "dynamodb:GetItem"
         ],
-        "Resource" : "arn:aws:dynamodb:eu-north-1:911197153746:table/item_metadata"
+        "Resource" : ["arn:aws:dynamodb:eu-north-1:911197153746:table/user", "arn:aws:dynamodb:eu-north-1:911197153746:table/user_league_data", "arn:aws:dynamodb:eu-north-1:911197153746:table/items"]
       },
       {
         "Sid" : "S3Access",
@@ -25,10 +25,15 @@ resource "aws_iam_role_policy" "item_manager_policy" {
           "s3:PutObject",
           "s3:DeleteObject"
         ],
-        "Resource" : "arn:aws:s3:::your-bucket-name/*"
+        "Resource" : "arn:aws:s3:::user-item-filters"
       }
     ]
   })
+}
+
+resource "aws_iam_role_policy_attachment" "lambda_logs" {
+  role       = aws_iam_role.item_manager.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
 }
 
 resource "aws_iam_policy" "github_actions_policy" {
