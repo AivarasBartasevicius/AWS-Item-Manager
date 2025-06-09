@@ -1,13 +1,14 @@
 import { Request, Response } from "express";
 import { DynamoDBService } from "../service/dynamodb";
 import { UserLeagueDataKey } from "../types/dynamodb.type";
-import { getItemsByLocation, putItems } from "../service/item.service";
+import { createItemService } from "../service/item.service";
 import { Stash, StashDTO } from "../types/stash.types";
 import { mapDTOtoStash, mapStashToDTO } from "../mappers/stash.mapper";
 
 const stashDDB = new DynamoDBService<StashDTO, UserLeagueDataKey>(
   "user_league_data"
 );
+const itemService = createItemService();
 
 export async function getStashList(req: Request, res: Response) {
   const user = req.user;
@@ -24,7 +25,10 @@ export async function getStashList(req: Request, res: Response) {
   //Would need some way to identify a game server and use consistentRead = true
   for (const stash of result) {
     resultsWithItems.push(
-      mapDTOtoStash(stash, await getItemsByLocation(stash.leagueObjectId))
+      mapDTOtoStash(
+        stash,
+        await itemService.getItemsByLocation(stash.leagueObjectId)
+      )
     );
   }
 
@@ -53,7 +57,10 @@ export async function getStash(req: Request, res: Response) {
   return res
     .status(200)
     .json(
-      mapDTOtoStash(result, await getItemsByLocation(result.leagueObjectId))
+      mapDTOtoStash(
+        result,
+        await itemService.getItemsByLocation(result.leagueObjectId)
+      )
     );
 }
 
@@ -69,7 +76,7 @@ export async function putStash(req: Request, res: Response) {
   };
 
   if (body.items && body.items.length > 0) {
-    await putItems(body.items, key.leagueObjectId);
+    await itemService.putItems(body.items, key.leagueObjectId);
   }
 
   const stash: StashDTO = mapStashToDTO(body, key);
@@ -90,7 +97,7 @@ export async function updateStash(req: Request, res: Response) {
   const stash: Partial<StashDTO> = mapStashToDTO<true>(body, undefined);
 
   if (body.items && body.items.length > 0) {
-    await putItems(body.items, key.leagueObjectId);
+    await itemService.putItems(body.items, key.leagueObjectId);
   }
 
   await stashDDB.update(stash, key);

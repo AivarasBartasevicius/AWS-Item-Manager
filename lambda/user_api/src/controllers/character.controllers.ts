@@ -3,11 +3,12 @@ import { DynamoDBService } from "../service/dynamodb";
 import { UserLeagueDataKey } from "../types/dynamodb.type";
 import { Character, CharacterDTO } from "../types/character.types";
 import { DTOtoCharacter, mapCharacterToDTO } from "../mappers/character.mapper";
-import { getItemsByLocation, putItems } from "../service/item.service";
+import { createItemService } from "../service/item.service";
 
 const characterDDB = new DynamoDBService<CharacterDTO, UserLeagueDataKey>(
   "user_league_data"
 );
+const itemService = createItemService();
 
 export async function getCharacterList(req: Request, res: Response) {
   const user = req.user;
@@ -56,7 +57,12 @@ export async function getCharacter(req: Request, res: Response) {
   //Would need some way to identify a game server and use consistentRead = true
   return res
     .status(200)
-    .json(DTOtoCharacter(result, await getItemsByLocation(key.leagueObjectId)));
+    .json(
+      DTOtoCharacter(
+        result,
+        await itemService.getItemsByLocation(key.leagueObjectId)
+      )
+    );
 }
 
 export async function putCharacter(req: Request, res: Response) {
@@ -70,7 +76,7 @@ export async function putCharacter(req: Request, res: Response) {
   };
 
   if (body.items && body.items.length > 0) {
-    await putItems(body.items, key.leagueObjectId);
+    await itemService.putItems(body.items, key.leagueObjectId);
   }
 
   const character: CharacterDTO = mapCharacterToDTO(body, key);
@@ -94,7 +100,7 @@ export async function updateCharacter(req: Request, res: Response) {
   );
 
   if (body.items && body.items.length > 0) {
-    await putItems(body.items, key.leagueObjectId);
+    await itemService.putItems(body.items, key.leagueObjectId);
   }
 
   await characterDDB.update(character, key);

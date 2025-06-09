@@ -29,8 +29,8 @@ export interface Item {
   typeLine: string;
   baseType: string;
   rarity: string;
-  ilvl: number;
-  identified: boolean;
+  ilvl?: number;
+  identified?: boolean;
   searing?: boolean;
   tangled?: boolean;
   support?: boolean;

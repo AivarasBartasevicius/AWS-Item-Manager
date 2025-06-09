@@ -3,9 +3,8 @@ import { ItemKey } from "../types/dynamodb.type";
 import { Item, ItemDTO } from "../types/item.types";
 import { DynamoDBService } from "./dynamodb";
 
-const itemDDB = new DynamoDBService<ItemDTO, ItemKey>("user");
-
 export async function getItemsByLocation(
+  itemDDB: DynamoDBService<ItemDTO, ItemKey>,
   locationId: string,
   consistentRead = false
 ) {
@@ -37,7 +36,11 @@ export async function getItemsByLocation(
   return result.map((item) => mapDTOtoItem(item, itemsMap[item.locationId]));
 }
 
-export async function putItems(items: Item[], locationId: string) {
+export async function putItems(
+  itemDDB: DynamoDBService<ItemDTO, ItemKey>,
+  items: Item[],
+  locationId: string
+) {
   const requests: {
     PutRequest: {
       Item: ItemDTO;
@@ -72,3 +75,13 @@ export async function putItems(items: Item[], locationId: string) {
   await itemDDB.batchWrite(requests);
   return;
 }
+
+export const createItemService = () => {
+  const itemDDB = new DynamoDBService<ItemDTO, ItemKey>("user");
+  return {
+    getItemsByLocation: (locationId: string, consistentRead?: boolean) =>
+      getItemsByLocation(itemDDB, locationId, consistentRead),
+    putItems: (items: Item[], locationId: string) =>
+      putItems(itemDDB, items, locationId),
+  };
+};
