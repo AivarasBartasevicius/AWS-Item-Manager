@@ -33,7 +33,7 @@ export async function getStashList(req: Request, res: Response) {
   }
 
   if (!resultsWithItems || resultsWithItems.length === 0) {
-    return res.status(204).send();
+    return res.status(404).send();
   }
   return res.status(200).json(resultsWithItems);
 }
@@ -50,7 +50,7 @@ export async function getStash(req: Request, res: Response) {
   const result = await stashDDB.get(key);
 
   if (!result) {
-    return res.status(204).send();
+    return res.status(404).send();
   }
 
   //Would need some way to identify a game server and use consistentRead = true
@@ -82,7 +82,7 @@ export async function putStash(req: Request, res: Response) {
   const stash: StashDTO = mapStashToDTO(body, key);
 
   await stashDDB.put(stash);
-  return res.status(req.params.userId ? 204 : 201).send();
+  return res.status(201).send();
 }
 
 export async function updateStash(req: Request, res: Response) {
@@ -101,5 +101,5 @@ export async function updateStash(req: Request, res: Response) {
   }
 
   await stashDDB.update(stash, key);
-  return res.status(req.params.userId ? 204 : 201).send();
+  return res.status(204).send();
 }

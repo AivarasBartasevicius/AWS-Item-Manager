@@ -22,7 +22,7 @@ function getProfile(userId: string, id: string) {
 export async function getPrivateProfile(req: Request, res: Response) {
   const result = await getProfile(req.user.userId, req.params.id);
   if (!result) {
-    return res.status(204).send();
+    return res.status(404).send();
   }
   return res.status(200).json(mapDTOtoProfile(result));
 }
@@ -33,7 +33,7 @@ export async function getPublicProfile(req: Request, res: Response) {
 
   const result = await getProfile(requestedUserId, req.params.id);
   if (!result) {
-    return res.status(204).send();
+    return res.status(404).send();
   }
   if (result.private) {
     return res.status(403).send();
@@ -51,7 +51,7 @@ export async function putProfile(req: Request, res: Response) {
   });
 
   await profileDDB.put(profileDTO);
-  return res.status(req.params.userId ? 204 : 201).send();
+  return res.status(201).send();
 }
 
 export async function updateProfile(req: Request, res: Response) {
@@ -63,5 +63,5 @@ export async function updateProfile(req: Request, res: Response) {
     userId: `${req.user.userId}`,
     userObjectId: `PROFILE#${req.params.id}`,
   });
-  return res.status(req.params.userId ? 204 : 201).send();
+  return res.status(204).send();
 }

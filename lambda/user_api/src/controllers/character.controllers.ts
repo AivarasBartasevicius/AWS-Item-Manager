@@ -48,7 +48,7 @@ export async function getCharacter(req: Request, res: Response) {
   const result = await characterDDB.get(key);
 
   if (!result) {
-    return res.status(204).send();
+    return res.status(404).send();
   }
   if (!isOwner || result.private) {
     return res.status(401).send();
@@ -82,7 +82,7 @@ export async function putCharacter(req: Request, res: Response) {
   const character: CharacterDTO = mapCharacterToDTO(body, key);
 
   await characterDDB.put(character);
-  return res.status(req.params.userId ? 204 : 201).send();
+  return res.status(201).send();
 }
 
 export async function updateCharacter(req: Request, res: Response) {
@@ -104,7 +104,7 @@ export async function updateCharacter(req: Request, res: Response) {
   }
 
   await characterDDB.update(character, key);
-  return res.status(req.params.userId ? 204 : 201).send();
+  return res.status(204).send();
 }
 
 //TODO: Probably need to add filter on "delete" field to on GET requests because of this

@@ -52,7 +52,7 @@ export async function getItemFilter(req: Request, res: Response) {
   };
   const result = await itemFilterDDB.get(userKey);
   if (!result) {
-    return res.status(204).send();
+    return res.status(404).send();
   }
   if (!result.public && !isOwner) {
     return res.status(401).send();
@@ -91,7 +91,7 @@ export async function updateItemFilter(req: Request, res: Response) {
   const result = await itemFilterDDB.update(itemFilter, filterKey);
 
   if (!result) {
-    return res.status(204).send();
+    return res.status(404).send();
   }
 
   const filterBuffer = body.filter
