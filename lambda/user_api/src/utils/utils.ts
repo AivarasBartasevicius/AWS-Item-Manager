@@ -10,18 +10,6 @@ export function pickOutValues<Item, Keys>(
   return obj as Item;
 }
 
-export function filterOutValues<Item, Key>(
-  obj: Record<string, any>,
-  keys: Key[]
-): Item {
-  for (const key in obj) {
-    if (keys.includes(key as Key)) {
-      delete obj[key];
-    }
-  }
-  return obj as Item;
-}
-
 type UpdateExpressionParts = {
   UpdateExpression: string;
   ExpressionAttributeValues: Record<string, any>;

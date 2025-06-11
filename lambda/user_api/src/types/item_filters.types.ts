@@ -11,6 +11,10 @@ export interface ItemFilter {
   filter: string;
 }
 
+export interface ItemFilterResponse extends Omit<ItemFilter, "filter"> {}
+{
+}
+
 export interface ItemFilterDTO
   extends UserKey,
     Omit<ItemFilter, "id" | "filter"> {}

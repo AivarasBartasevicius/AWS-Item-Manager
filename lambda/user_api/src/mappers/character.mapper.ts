@@ -22,23 +22,23 @@ export function mapCharacterToDTO<isPartial = false>(
   };
 }
 
-export function DTOtoCharacter(character: CharacterDTO, items?: Item[]) {
-  const profile: Character = {
+export function DTOtoCharacter(characterDto: CharacterDTO, items?: Item[]) {
+  const character: Character = {
     character: {
-      id: character.leagueObjectId.replace("CHARACTER#", ""),
-      name: character.name,
-      realm: character.realm,
-      class: character.class,
-      level: character.level,
-      experience: character.experience,
-      passives: character.passives,
-      ruthless: character.ruthless,
-      deleted: character.deleted,
+      id: characterDto.leagueObjectId.replace("CHARACTER#", ""),
+      name: characterDto.name,
+      realm: characterDto.realm,
+      class: characterDto.class,
+      level: characterDto.level,
+      experience: characterDto.experience,
+      passives: characterDto.passives,
+      ruthless: characterDto.ruthless,
+      deleted: characterDto.deleted,
     },
     items: items,
     inventory: {
-      gold: character.gold,
+      gold: characterDto.gold,
     },
   };
-  return profile;
+  return character;
 }

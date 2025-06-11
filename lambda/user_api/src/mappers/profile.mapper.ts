@@ -1,51 +1,36 @@
 import { UserKey } from "../types/dynamodb.type";
 import { ProfileDTO, Profile, PublicProfile } from "../types/profile.types";
-import { filterOutValues, pickOutValues } from "../utils/utils";
+import { pickOutValues } from "../utils/utils";
 
 export function mapProfileToDTO<isPartial = false>(
-  item: Profile,
+  profile: Profile,
   userKey: isPartial extends true ? UserKey | undefined : UserKey
 ): isPartial extends true ? Partial<ProfileDTO> : ProfileDTO {
-  const dto = {
+  const { uuid, ...filteredProfile } = profile;
+  const profileDto = {
     ...userKey!,
-    name: item.name,
-    locale: item.locale,
-    twitch: item.twitch,
-    guild: item.guild,
-    forumPosts: item.forumPosts,
-    joined: item.joined,
-    lastLoggedIn: item.lastLoggedIn,
-    supporterPacks: item.supporterPacks,
-    email: item.email,
-    steamId: item.steamId,
-    epicId: item.epicId,
-    sonyId: item.sonyId,
-    microsoftId: item.microsoftId,
-    points: item.points,
-    skins: item.skins,
+    ...filteredProfile,
   };
 
-  return dto;
+  return profileDto;
 }
 
-export function mapDTOtoPublicProfile(item: ProfileDTO) {
+export function mapDTOtoPublicProfile(profileDto: ProfileDTO) {
   const profile: PublicProfile = {
     ...pickOutValues<PublicProfile, PublicProfile>(
-      item,
+      profileDto,
       Object.keys(PublicProfile) as (keyof PublicProfile)[]
     ),
-    uuid: item.userObjectId.replace("PROFILE#", ""),
+    uuid: profileDto.userObjectId.replace("PROFILE#", ""),
   };
   return profile;
 }
 
-export function mapDTOtoProfile(item: ProfileDTO) {
+export function mapDTOtoProfile(profileDto: ProfileDTO) {
+  const { userId, userObjectId, ...filteredProfile } = profileDto;
   const profile: Profile = {
-    ...filterOutValues<Profile, keyof UserKey>(
-      item,
-      Object.keys(UserKey) as (keyof UserKey)[]
-    ),
-    uuid: item.userObjectId.replace("PROFILE#", ""),
+    ...filteredProfile,
+    uuid: profileDto.userObjectId.replace("PROFILE#", ""),
   };
   return profile;
 }
