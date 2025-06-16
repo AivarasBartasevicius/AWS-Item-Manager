@@ -1,11 +1,11 @@
 import { Request, Response } from "express";
-import { DynamoDBService } from "../service/dynamodb";
+import { DynamoDBService } from "../service/dynamodb.service";
 import { UserLeagueDataKey } from "../types/dynamodb.type";
 import { createItemService } from "../service/item.service";
 import { Stash, StashDTO } from "../types/stash.types";
 import { mapDTOtoStash, mapStashToDTO } from "../mappers/stash.mapper";
 
-const stashDDB = new DynamoDBService<StashDTO, UserLeagueDataKey>(
+const stashDDB = DynamoDBService.getInstance<StashDTO, UserLeagueDataKey>(
   "user_league_data"
 );
 const itemService = createItemService();

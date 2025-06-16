@@ -1,7 +1,7 @@
 import { mapDTOtoItem, mapItemToDTO } from "../mappers/item.mapper";
 import { ItemKey } from "../types/dynamodb.type";
 import { Item, ItemDTO } from "../types/item.types";
-import { DynamoDBService } from "./dynamodb";
+import { DynamoDBService } from "./dynamodb.service";
 
 export async function getItemsByLocation(
   itemDDB: DynamoDBService<ItemDTO, ItemKey>,
@@ -77,7 +77,7 @@ export async function putItems(
 }
 
 export const createItemService = () => {
-  const itemDDB = new DynamoDBService<ItemDTO, ItemKey>("user");
+  const itemDDB = DynamoDBService.getInstance<ItemDTO, ItemKey>("user");
   return {
     getItemsByLocation: (locationId: string, consistentRead?: boolean) =>
       getItemsByLocation(itemDDB, locationId, consistentRead),

@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { DynamoDBService } from "../service/dynamodb";
+import { DynamoDBService } from "../service/dynamodb.service";
 import { ItemFilter, ItemFilterDTO } from "../types/item_filters.types";
 import { UserKey } from "../types/dynamodb.type";
 import { randomUUID } from "crypto";
@@ -7,9 +7,11 @@ import {
   mapDTOtoFilter,
   mapItemFilterToDTO,
 } from "../mappers/item_filters.mapper";
-import { S3Service } from "../service/s3";
+import { S3Service } from "../service/s3.service";
 
-const itemFilterDDB = new DynamoDBService<ItemFilterDTO, UserKey>("user");
+const itemFilterDDB = DynamoDBService.getInstance<ItemFilterDTO, UserKey>(
+  "user"
+);
 const itemFilterS3 = new S3Service("user-item-filters");
 
 export async function getItemFilterList(req: Request, res: Response) {

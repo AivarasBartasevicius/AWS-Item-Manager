@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { DynamoDBService } from "../service/dynamodb";
+import { DynamoDBService } from "../service/dynamodb.service";
 import { UserKey } from "../types/dynamodb.type";
 import { randomUUID } from "crypto";
 import { Profile, ProfileDTO } from "../types/profile.types";
@@ -9,7 +9,7 @@ import {
   mapProfileToDTO,
 } from "../mappers/profile.mapper";
 
-const profileDDB = new DynamoDBService<ProfileDTO, UserKey>("user");
+const profileDDB = DynamoDBService.getInstance<ProfileDTO, UserKey>("user");
 
 function getProfile(userId: string, id: string) {
   const userKey: UserKey = {

@@ -15,14 +15,32 @@ import { buildUpdateExpression } from "../utils/utils";
 export class DynamoDBService<Item extends DynamoDBItem, Key extends KeyObject> {
   private client: DynamoDBClient;
   private docClient: DynamoDBDocumentClient;
+  private static instances: Map<string, DynamoDBService<any, any>> = new Map();
 
-  constructor(
+  private constructor(
     private tableName: string,
     private maxRetries: number = 3,
     region: string = "eu-north-1"
   ) {
     this.client = new DynamoDBClient({ region });
     this.docClient = DynamoDBDocumentClient.from(this.client);
+  }
+
+  public static getInstance<I extends DynamoDBItem, K extends KeyObject>(
+    tableName: string,
+    maxRetries?: number,
+    region?: string
+  ): DynamoDBService<I, K> {
+    if (!DynamoDBService.instances.has(tableName)) {
+      const newInstance = new DynamoDBService<I, K>(
+        tableName,
+        maxRetries,
+        region
+      );
+      DynamoDBService.instances.set(tableName, newInstance);
+    }
+
+    return DynamoDBService.instances.get(tableName) as DynamoDBService<I, K>;
   }
 
   async get(key: Key): Promise<Item | null> {
